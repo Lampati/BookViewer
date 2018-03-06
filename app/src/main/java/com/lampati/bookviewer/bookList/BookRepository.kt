@@ -2,9 +2,16 @@ package com.lampati.bookviewer.bookList
 
 import com.lampati.bookviewer.base.RepositoryBase
 import com.lampati.bookviewer.bookList.daos.BookDao
+import com.lampati.bookviewer.bookList.entities.Book
+import com.lampati.bookviewer.bookList.web.BookWebService
 import com.lampati.bookviewer.commons.ResourcesService
 import com.lampati.bookviewer.commons.SharedPreferencesService
 import com.lampati.bookviewer.commons.ToastService
+import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import java.util.*
 import javax.inject.Singleton
 
 /**
@@ -17,4 +24,30 @@ class BookRepository(private val bookDao: BookDao,
                      toastService: ToastService,
                      resourcesService: ResourcesService):
         RepositoryBase(sharedPreferencesService, toastService, resourcesService) {
+
+
+
+
+
+    fun refeshBookList() : Single<Unit> {
+        val service = getRetrofit().create(BookWebService::class.java)
+
+        return service.getBooks("application/json")
+                .subscribeOn(Schedulers.io())
+                .flatMap {
+                    validateHttpResponse(it)
+                }
+                .flatMap {
+                    refreshBooksOnDatabase(it.toTypedArray())
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun refreshBooksOnDatabase( elements: Array<Book>): Single<Unit> {
+        return Single.fromCallable {
+            bookDao.truncateAndInsert(*elements)
+            sharedPreferencesService.putLastBookFetchTime(Date())
+
+        }
+    }
 }

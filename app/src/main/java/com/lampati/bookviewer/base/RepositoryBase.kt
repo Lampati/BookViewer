@@ -5,7 +5,6 @@ import com.lampati.bookviewer.commons.ResourcesService
 import com.lampati.bookviewer.commons.SharedPreferencesService
 import com.lampati.bookviewer.commons.ToastService
 import io.reactivex.Single
-import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
