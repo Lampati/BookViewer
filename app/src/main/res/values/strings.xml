@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">BookViewer</string>
+
+    <string name="error_404">Could not find server when fetching books</string>
+    <string name="error_500">Internal server error when fetching books</string>
+    <string name="error_unknown">Unknown error when fetching books</string>
+
+
 </resources>
