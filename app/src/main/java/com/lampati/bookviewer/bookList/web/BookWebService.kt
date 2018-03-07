@@ -10,6 +10,6 @@ import retrofit2.http.Header
  * Created by FEDE on 6/3/2018.
  */
 interface BookWebService {
-    @GET("book.json")
+    @GET("books.json")
     fun getBooks(@Header("Content-Type") contentType: String): Single<Response<List<Book>>>
 }

@@ -9,5 +9,5 @@ import android.arch.persistence.room.Entity
 @Entity(primaryKeys = ["title"])
 data class Book(
         @ColumnInfo(name = "title") var title: String,
-        @ColumnInfo(name = "imageURL") var imageURL: String,
-        @ColumnInfo(name = "author") var author: String)
+        @ColumnInfo(name = "imageURL") var imageURL: String?,
+        @ColumnInfo(name = "author") var author: String?)

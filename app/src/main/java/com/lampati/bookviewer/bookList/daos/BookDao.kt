@@ -11,7 +11,7 @@ import com.lampati.bookviewer.bookList.entities.Book
 @Dao
 abstract class BookDao {
 
-    @Query("SELECT title, imageURL, author FROM Book")
+    @Query("SELECT title, imageURL, author FROM Book ORDER BY title")
     abstract fun getAll(): LiveData<List<Book>>
 
     @Query("DELETE FROM Book")
@@ -20,10 +20,15 @@ abstract class BookDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract  fun insert( vararg  elem: Book)
 
-    @Transaction
-    open fun truncateAndInsert( vararg  elem: Book){
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract  fun insert(  elem: Book)
+
+
+    open fun truncateAndInsert(   list: List<Book>){
         truncate()
-        insert(*elem)
+        for (elem in list){
+            insert(elem)
+        }
     }
 
 }

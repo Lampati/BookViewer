@@ -9,6 +9,7 @@ import com.lampati.bookviewer.bookList.web.BookWebService
 import com.lampati.bookviewer.commons.ResourcesService
 import com.lampati.bookviewer.commons.SharedPreferencesService
 import com.lampati.bookviewer.commons.ToastService
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -38,26 +39,24 @@ class BookRepository(private val bookDao: BookDao,
 
 
 
-    fun refeshBookList() : Single<Boolean> {
+    fun refeshBookList() : Completable {
         val service = getRetrofit().create(BookWebService::class.java)
 
         return service.getBooks("application/json")
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.computation())
                 .flatMap {
                     validateHttpResponse(it)
                 }
-                .flatMap {
-                    refreshBooksOnDatabase(it.toTypedArray())
+                .flatMapCompletable {
+                    refreshBooksOnDatabase(it)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
-    private fun refreshBooksOnDatabase( elements: Array<Book>): Single<Boolean> {
-        return Single.fromCallable {
-            bookDao.truncateAndInsert(*elements)
+    private fun refreshBooksOnDatabase( elements: List<Book>): Completable {
+        return Completable.fromCallable {
+            bookDao.truncateAndInsert(elements)
             sharedPreferencesService.putLastBookFetchTime(Date())
-            //if no exception we assume it ended ok
-            true
         }
     }
 }
