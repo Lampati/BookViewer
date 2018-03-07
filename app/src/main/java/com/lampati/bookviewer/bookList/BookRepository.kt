@@ -1,5 +1,7 @@
 package com.lampati.bookviewer.bookList
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import com.lampati.bookviewer.base.RepositoryBase
 import com.lampati.bookviewer.bookList.daos.BookDao
 import com.lampati.bookviewer.bookList.entities.Book
@@ -26,10 +28,17 @@ class BookRepository(private val bookDao: BookDao,
         RepositoryBase(sharedPreferencesService, toastService, resourcesService) {
 
 
+    fun getBooks(): LiveData<List<Book>> {
+        return bookDao.getAll()
+    }
+
+    fun getLastRefreshTime(): Date? {
+       return sharedPreferencesService.getLastBookFetchTime()
+    }
 
 
 
-    fun refeshBookList() : Single<Unit> {
+    fun refeshBookList() : Single<Boolean> {
         val service = getRetrofit().create(BookWebService::class.java)
 
         return service.getBooks("application/json")
@@ -43,11 +52,12 @@ class BookRepository(private val bookDao: BookDao,
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
-    fun refreshBooksOnDatabase( elements: Array<Book>): Single<Unit> {
+    private fun refreshBooksOnDatabase( elements: Array<Book>): Single<Boolean> {
         return Single.fromCallable {
             bookDao.truncateAndInsert(*elements)
             sharedPreferencesService.putLastBookFetchTime(Date())
-
+            //if no exception we assume it ended ok
+            true
         }
     }
 }

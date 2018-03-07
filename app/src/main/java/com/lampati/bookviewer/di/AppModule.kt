@@ -1,5 +1,7 @@
 package com.lampati.bookviewer.di
 
+import android.arch.persistence.room.Room
+import android.content.Context
 import com.lampati.bookviewer.BookViewerApplication
 import com.lampati.bookviewer.bookList.BookRepository
 import com.lampati.bookviewer.bookList.daos.BookDao
@@ -33,6 +35,9 @@ class AppModule {
     @Provides @Singleton
     fun providesBookDao(database: BookViewerDatabase) = database.bookDao()
 
+    @Provides @Singleton
+    fun providesAppDatabase(context: Context): BookViewerDatabase =
+            Room.databaseBuilder(context, BookViewerDatabase::class.java, "book-viewer").build()
 
     @Provides @Singleton
     fun providesBookRepository(bookDao: BookDao,

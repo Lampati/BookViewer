@@ -2,6 +2,7 @@ package com.lampati.bookviewer.di
 
 import com.lampati.bookviewer.bookList.BookListActivity
 import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
 
 /**
@@ -10,6 +11,8 @@ import dagger.Module
 @Module
 abstract class ActivitiesModule {
 
+
+    @ContributesAndroidInjector
     @ActivityScope
     abstract fun bindBookListActivity(): BookListActivity
 }

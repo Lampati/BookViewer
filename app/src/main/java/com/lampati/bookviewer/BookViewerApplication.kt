@@ -19,6 +19,10 @@ class BookViewerApplication : Application(), HasActivityInjector{
 
     lateinit var appComponent: AppComponent
 
+    companion object {
+        val TAG = "BookViewerApplication"
+    }
+
     override fun onCreate() {
         super.onCreate()
 
