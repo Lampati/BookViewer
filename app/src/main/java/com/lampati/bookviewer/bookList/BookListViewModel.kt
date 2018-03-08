@@ -30,7 +30,7 @@ class BookListViewModel @Inject constructor(private val bookRepository: BookRepo
         ultimaActualizacion.value = bookRepository.getLastRefreshTime()
     }
 
-    fun refreshList(){
+    fun refreshList( onComplete :  () -> Unit){
         try{
             bookRepository.refeshBookList()
                     .subscribeWith( object: DisposableCompletableObserver(){
@@ -42,6 +42,7 @@ class BookListViewModel @Inject constructor(private val bookRepository: BookRepo
                         override fun onComplete() {
                             Log.i(BookViewerApplication.TAG, "Success on refreshList")
                             ultimaActualizacion.value = bookRepository.getLastRefreshTime()
+                            onComplete()
                         }
                     })
         }catch(e: Exception){

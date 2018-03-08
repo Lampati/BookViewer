@@ -10,4 +10,8 @@ class ResourcesService(private val mContext: Context) {
     fun getString(id: Int): String {
         return mContext.getString(id)
     }
+
+    open fun getString( id: Int, extra1: Any?): String{
+        return mContext.getString(id,extra1)
+    }
 }

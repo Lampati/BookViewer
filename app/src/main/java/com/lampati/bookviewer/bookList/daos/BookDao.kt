@@ -20,15 +20,9 @@ abstract class BookDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract  fun insert( vararg  elem: Book)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract  fun insert(  elem: Book)
-
-
     open fun truncateAndInsert(   list: List<Book>){
         truncate()
-        for (elem in list){
-            insert(elem)
-        }
+        insert(*list.toTypedArray())
     }
 
 }
